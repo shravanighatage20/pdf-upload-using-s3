@@ -7,7 +7,7 @@ service: shravani-s3-demo
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs18.x
   region: ca-central-1
 
   iamRoleStatements:
