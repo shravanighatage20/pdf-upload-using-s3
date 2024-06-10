@@ -31,5 +31,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
+      - name: Serverless Login
+        run: serverless login --token ${{ secrets.SERVERLESS_ACCESS_TOKEN }}
+
       - name: Deploy with Serverless
         run: serverless deploy
