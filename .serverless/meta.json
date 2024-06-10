@@ -1,0 +1,99 @@
+{
+  "C:\\Users\\Shravani\\Documents\\serverless\\pdf-upload-using-s3": {
+    "versionSfCore": null,
+    "versionFramework": "4.0.38",
+    "isWithinCompose": false,
+    "composeOrgName": null,
+    "servicePath": "C:\\Users\\Shravani\\Documents\\serverless\\pdf-upload-using-s3",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "shravani-s3-demo",
+      "frameworkVersion": "4",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs20.x",
+        "region": "ca-central-1",
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:PutObject",
+              "s3:GetObject"
+            ],
+            "Resource": "arn:aws:s3:::${self:custom.bucketName}/*"
+          }
+        ]
+      },
+      "functions": {
+        "uploadPdf": {
+          "handler": "lambdas/src/index.uploadPdf",
+          "events": [
+            {
+              "http": {
+                "path": "upload",
+                "method": "post",
+                "cors": true
+              }
+            }
+          ]
+        },
+        "getPdf": {
+          "handler": "lambdas/src/index.getPdf",
+          "events": [
+            {
+              "http": {
+                "path": "pdf/{key}",
+                "method": "get",
+                "cors": true
+              }
+            }
+          ]
+        }
+      },
+      "resources": {
+        "Resources": {
+          "S3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "${self:custom.bucketName}"
+            }
+          }
+        }
+      },
+      "custom": {
+        "bucketName": "shravani-s3-bucket-demo"
+      }
+    },
+    "serviceRawFile": "service: shravani-s3-demo\r\n\r\nframeworkVersion: '4'\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs20.x\r\n  region: ca-central-1\r\n\r\n  iamRoleStatements:\r\n    - Effect: Allow\r\n      Action:\r\n        - s3:PutObject\r\n        - s3:GetObject\r\n      Resource: arn:aws:s3:::${self:custom.bucketName}/*\r\n\r\nfunctions:\r\n  uploadPdf:\r\n    handler: lambdas/src/index.uploadPdf\r\n    events:\r\n      - http:\r\n          path: upload\r\n          method: post\r\n          cors: true\r\n\r\n  getPdf:\r\n    handler: lambdas/src/index.getPdf\r\n    events:\r\n      - http:\r\n          path: pdf/{key}\r\n          method: get\r\n          cors: true\r\n\r\nresources:\r\n  Resources:\r\n    S3Bucket:\r\n      Type: AWS::S3::Bucket\r\n      Properties:\r\n        BucketName: ${self:custom.bucketName}\r\n\r\ncustom:\r\n  bucketName: shravani-s3-bucket-demo\r\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "error": {
+      "message": "User: arn:aws:iam::839728096237:user/shravani_serverless is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::839728096237:user/shravani_serverless",
+      "stack": "AccessDenied: User: arn:aws:iam::839728096237:user/shravani_serverless is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::839728096237:user/shravani_serverless\n    at throwDefaultError (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:85:7935)\n    at file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:85:8209\n    at de_CommandError (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:111:42769)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:76:90842\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:86:1884\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:85:26453\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:76:20219\n    at async Object.roleAssumer (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:111:68289)\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:76:69252\n    at async coalesceProvider (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:76:69630)\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:76:69919\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:146:371583\n    at async Object.resolveServiceConfig (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:1065:28355)\n    at async file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:1068:1209\n    at async route (file:///C:/Users/Shravani/.serverless/releases/4.0.38/package/dist/sf-core.js:1068:1182)"
+    },
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "f931cb80-ac6e-4637-a226-059efae570f6",
+    "orgName": "shravanighatage",
+    "userId": "9Bg2NW4XmrTM6tFmHZ",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "shravanighatage",
+    "subscription": null,
+    "userEmail": "shravanighatage11@gmail.com",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}

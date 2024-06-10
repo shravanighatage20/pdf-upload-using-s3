@@ -1,23 +1,45 @@
-service: pdf-api
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: shravanighatage
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: s3-pdf-upload
+service: shravani-s3-demo
+
 
 provider:
   name: aws
-  runtime: nodejs14.x
-  environment:
-    S3_BUCKET: shravani-pdf-bucket
+  runtime: nodejs20.x
+  region: ca-central-1
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: arn:aws:s3:::${self:custom.bucketName}/*
 
 functions:
-  app:
-    handler: index.handler
+  uploadPdf:
+    handler: lambdas/src/index.uploadPdf
     events:
       - http:
           path: upload
           method: post
           cors: true
+
+  getPdf:
+    handler: lambdas/src/index.getPdf
+    events:
       - http:
-          path: download/{filename}
+          path: pdf/{key}
           method: get
           cors: true
 
-plugins:
-  - serverless-offline
+resources:
+  Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+
+custom:
+  bucketName: shravani-s3-bucket-demo
