@@ -1,70 +1,55 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { parse } from 'url';
-import { v4 as uuidv4 } from 'uuid';
+import AWS from 'aws-sdk';
 
-const s3 = new S3Client({ region: 'ca-central-1' });
-const { BUCKET_NAME } = process.env;
+const s3 = new AWS.S3();
 
-export const uploadPdf = async (event) => {
+export const postHandler = async (event) => {
   const { body } = event;
   const buffer = Buffer.from(body, 'base64');
-  const key = `${uuidv4()}.pdf`;
+  const key = `uploads/${Date.now()}.pdf`;
+
+  const params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: key,
+    Body: buffer,
+    ContentType: 'application/pdf'
+  };
 
   try {
-    const params = {
-      Bucket: BUCKET_NAME,
-      Key: key,
-      Body: buffer,
-      ContentType: 'application/pdf'
-    };
-
-    await s3.send(new PutObjectCommand(params));
-
+    await s3.putObject(params).promise();
     return {
       statusCode: 200,
-      body: JSON.stringify({ key }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      body: JSON.stringify({ message: 'File uploaded successfully', key }),
     };
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      body: JSON.stringify({ message: 'File upload failed', error }),
     };
   }
 };
 
-export const getPdf = async (event) => {
-  const { key } = event.pathParameters;
+export const getHandler = async (event) => {
+  const key = event.pathParameters.key;
+
+  const params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: key,
+  };
 
   try {
-    const params = {
-      Bucket: BUCKET_NAME,
-      Key: key
-    };
-
-    const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-
+    const data = await s3.getObject(params).promise();
     return {
       statusCode: 200,
-      body: JSON.stringify({ url }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/pdf',
+      },
+      body: data.Body.toString('base64'),
+      isBase64Encoded: true,
     };
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      body: JSON.stringify({ message: 'File retrieval failed', error }),
     };
   }
 };

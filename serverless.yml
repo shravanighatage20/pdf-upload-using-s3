@@ -1,14 +1,13 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: shravanighatage
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: s3-pdf-upload
-service: shravani-s3-demo
+service: s3-demo
 
+frameworkVersion: '2'
 
 provider:
   name: aws
   runtime: nodejs18.x
   region: ca-central-1
+  environment:
+    BUCKET_NAME: ${self:custom.bucketName}
 
   iamRoleStatements:
     - Effect: Allow
@@ -18,21 +17,25 @@ provider:
       Resource: arn:aws:s3:::${self:custom.bucketName}/*
 
 functions:
-  uploadPdf:
-    handler: lambdas/src/index.uploadPdf
+  postObject:
+    handler: lambdas/src/index.postHandler
     events:
       - http:
           path: upload
           method: post
           cors: true
+    environment:
+      BUCKET_NAME: ${self:custom.bucketName}
 
-  getPdf:
-    handler: lambdas/src/index.getPdf
+  getObject:
+    handler: lambdas/src/index.getHandler
     events:
       - http:
-          path: pdf/{key}
+          path: download/{key}
           method: get
           cors: true
+    environment:
+      BUCKET_NAME: ${self:custom.bucketName}
 
 resources:
   Resources:
@@ -42,4 +45,4 @@ resources:
         BucketName: ${self:custom.bucketName}
 
 custom:
-  bucketName: shravani-s3-bucket-demo
+  bucketName: shravani-serverless-s3-bucket

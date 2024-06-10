@@ -1,24 +1,16 @@
 {
-  "name": "pdf-upload-using-s3",
+  "name": "s3-demo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Serverless application for S3 bucket operations",
+  "main": "index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "serverless deploy",
+    "remove": "serverless remove"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.592.0",
-    "@aws-sdk/s3-request-presigner": "^3.592.0",
-    "aws-sdk": "^2.1637.0",
-    "express": "^4.19.2",
-    "multer": "^1.4.5-lts.1",
-    "serverless-http": "^3.2.0",
-    "uuid": "^10.0.0"
+    "aws-sdk": "^2.814.0"
   },
   "devDependencies": {
-    "serverless": "^4.0.35"
+    "serverless": "^2.72.4"
   }
 }
