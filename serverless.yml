@@ -1,0 +1,23 @@
+service: pdf-api
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  environment:
+    S3_BUCKET: shravani-pdf-bucket
+
+functions:
+  app:
+    handler: index.handler
+    events:
+      - http:
+          path: upload
+          method: post
+          cors: true
+      - http:
+          path: download/{filename}
+          method: get
+          cors: true
+
+plugins:
+  - serverless-offline
